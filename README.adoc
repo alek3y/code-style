@@ -1,0 +1,164 @@
+= Style
+:toc:
+
+These are most of the rules and conventions I use to write readable and consistent code.. or so that's what I hope :/ +
+At the end of the day it's just a list of guidelines for my own code style. There's no need to actually follow them.
+
+== Naming
+It's very important to name everything consistently, no matter the length of the resulting name. +
+Either way, I usually prefer to use no more than two words for each name. This obviously means I have to structure my code so that I won't have useless code and unclear names.
+
+Most of the times I change the case style depeding on the language. But I like snake case, and use capital letters with types: +
+[source,c]
+----
+typedef thread_t Thread;
+
+int number_to_process;
+process_number(number_to_process);
+----
+
+For Javascript, for example, which uses a different style:
+[source,javascript]
+----
+const HOURS_PER_DAY = 24;
+
+let fibonacci_index = 5;
+fibonacciAt(fibonacci_index);
+----
+
+C, however, is a language that doesn't have OOP. This means I have to pay attention to the names I give to each function. +
+To fix this I just sort each word in the name from most generic to least generic:
+[source,c]
+----
+struct Date {
+  unsigned long year, month, day;
+  unsigned long hours, minutes, seconds, milliseconds;
+}
+
+Date date_new(unsigned long seconds_from_epoch);
+Date date_from_timespec(struct timespec seconds);
+bool date_is_summer(Date self);
+unsigned long date_to_seconds(Date self);
+unsigned long date_to_milliseconds(Date self);
+----
+
+== Comments
+For normal comments I usually have them at the end of the line for line related comments, and on the previous line for chunk related comments. +
+Obviously the next example is not realistic, as you should always explain what or why something is being done, not how. Furthermore, you should only comment tricky, non-obvious, crucial and intersting parts of the code.
+[source,javascript]
+----
+let to_square = 2;  // Input number
+
+// Make it squared
+let squarer = function(x) {
+  return x * x;
+};
+let squared = squarer(to_square);
+
+console.log(squared);  // Print it
+----
+
+For comment sections, I have three levels of importance. After which I always leave an empty newline:
+[source,java]
+----
+/*
+Program title, info and stuff
+*/
+
+/* Section title */
+
+// Sub-section
+----
+
+Tag comments are very important to search for code and to draw attention:
+[source,c]
+----
+int number_on_heap = malloc(1);  // FIXME: This doesn't count for the size of an `int`
+int to_store = 2;  // TODO: Assign this value to the address in the heap
+
+uint32_t rgb;  // NOTE: the left-most byte is left unassigned
+----
+
+For commented out code, I want to be able to uncomment and run it easily. This means I will treat code as actual code inside the multiline comment.
+[source,c]
+----
+/*
+// This was removed because it was useless
+// Also, why did I only come up with this example
+
+while (true) {}
+*/
+----
+
+== Assignments
+This is simple. I just leave spaces before and after the equal sign:
+[source,c]
+----
+double pi = 3.14;
+----
+
+== Control flow
+The common rule for me here is that I have to keep a space after the keywords:
+[source,c]
+----
+if (false) {
+  printf("Will never execute\n");
+}
+
+size_t counter = 0;
+for (size_t i = 0; i < 10; i++) {
+  counter++;
+}
+
+do {
+  counter--;
+} while (counter > 5);
+----
+
+== Spacing
+In order to make the code more readable I usually leave spaces between arithmetic operations. If there's not enough space I usually remove the spaces between operations with constants:
+[source,c]
+----
+multiply(complex_stuff * 2 - 1, simple_operation-1);
+----
+
+Also, I always add a newline between chunks of code to separate logical groupings of code.
+[source,c]
+----
+int haystack[] = {4, 7, 1, 11, 3, 9};
+int haystack_length = sizeof(haystack)/sizeof(haystack[0]);
+
+int needle = 11;
+size_t found_index = 0;
+for (size_t i = 0; i < haystack_length; i++) {
+  if (haystack[i] == needle) {
+    found_index = i;
+    break;
+  }
+}
+
+printf("Found at %lu\n", found_index);
+----
+
+== Parameters
+I simply like to sort function parameters according to their relevance:
+[source,c]
+----
+Body *body_new(char symbol, Point position, bool hidden);
+
+void hashmap_add(HashMap self, char *key, void *value, size_t size);
+#define hashmap_add(type, self, key, value) hashmap_add(self, key, value, sizeof(type))
+----
+
+== Long lines
+This is kinda complicated. I don't like when a line becomes too complex and long. +
+As of now I don't have a ruler at a specific width, but usually I just split the line when it feels too long:
+[source,c]
+----
+if (
+  (position.x >= board.top_left.x && position.x <= board.bottom_right.x) &&
+  (position.y >= board.top_left.y && position.y <= board.bottom_right.y)
+) {
+  printf("Woo! It's inside the board");
+}
+----
